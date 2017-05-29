@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"github.com/ghst659/grepgo/grepper"
+	"log"
 )
 
 func main() {
-	grep, targets, _, err := grepper.CliParse()
+	grep, targets, err := grepper.CliParse()
 	if err == nil {
-		for _, target := range targets {
+		for target := range targets {
 			results := make(chan grepper.SearchHit)
 			go grep.YieldHits(target, results)
 			for hit, not_done := <-results; not_done; hit, not_done = <-results {
