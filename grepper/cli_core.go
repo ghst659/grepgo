@@ -29,8 +29,7 @@ func getTargets(items []string, targets chan string, recursive bool) {
 			log.Printf("%s: no such file or directory", item)
 		} else {
 			fswalk.Files(item, recursive, targets)
-			// targets <- item
 		}
 	}
-	// close(targets)
+	close(targets)
 }

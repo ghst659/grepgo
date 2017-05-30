@@ -1,6 +1,7 @@
 package fswalk
 
 import (
+	"log"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -13,17 +14,21 @@ func Dummy(root string, recursive bool, items chan<- string) {
 	close(items)
 }
 
-func Files(root string, recursive bool, items chan<- string) {
+func Files(item string, recursive bool, ch chan<- string) {
 	if recursive {
 		walker := func(path string, info os.FileInfo, err error) error {
-			if !info.IsDir() { // regular file
-				items <- path
+			if info.Mode().IsRegular() {
+				ch <- path
 			}
 			return nil
 		}
-		filepath.Walk(root, walker)
+		filepath.Walk(item, walker)
 	} else {
-		items <- root
+		info, err := os.Stat(item)
+		if err == nil && info.Mode().IsRegular() {
+			ch <- item
+		} else {
+			log.Printf("%s: not a file\n", item)
+		}
 	}
-	close(items)
 }
