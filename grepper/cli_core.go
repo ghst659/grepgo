@@ -22,7 +22,7 @@ func CliParse() (grep Grepper, targets chan string, err error) {
 	return
 }
 
-func getTargets(items []string, targets chan string, recursive bool) {
+func getTargets(items []string, targets chan<- string, recursive bool) {
 	for _, item := range items {
 		_, code := os.Stat(item)
 		if os.IsNotExist(code) {
