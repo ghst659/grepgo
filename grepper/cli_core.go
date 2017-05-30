@@ -23,6 +23,7 @@ func CliParse() (grep Grepper, targets chan string, err error) {
 }
 
 func getTargets(items []string, targets chan<- string, recursive bool) {
+	defer close(targets)
 	for _, item := range items {
 		_, code := os.Stat(item)
 		if os.IsNotExist(code) {
@@ -31,5 +32,4 @@ func getTargets(items []string, targets chan<- string, recursive bool) {
 			fswalk.Files(item, recursive, targets)
 		}
 	}
-	close(targets)
 }
